@@ -80,6 +80,43 @@ chmod +x ./vilicom
 
 ---
 
+## 📁 项目目录结构
+
+```text
+vilicom/
+├── .github/                      # GitHub Actions CI 与 Issue 模版
+│   ├── workflows/ci.yml          # 自动化构建与测试流水线
+│   └── ISSUE_TEMPLATE/           # Bug 报告与功能建议模版
+├── assets/                       # 品牌设计与图标母版
+│   └── branding/                 # 1024x1024 高清应用图标与 Logo
+├── docs/                         # 项目文档与初始原型
+│   ├── dev_prompt.md             # AI 时代协同开发架构提示词
+│   └── prototype.html            # 初始 UI 交互原型存档
+├── src/                          # 前端 Web UI (原生轻量化设计，无冗余打包)
+│   ├── css/
+│   │   ├── app.css               # 布局结构与组件交互样式
+│   │   └── themes.css            # 护眼调色板（摩卡、东京夜、极地、黑曜、素雅）
+│   ├── js/
+│   │   └── app.js                # 前端主控制器与 Tauri IPC 事件总线
+│   ├── icon.png                  # 前端窗口 Favicon
+│   └── index.html                # 语义化主界面入口
+├── src-tauri/                    # Rust 跨平台桌面底层
+│   ├── src/
+│   │   ├── commands.rs           # Tauri IPC 接口路由层
+│   │   ├── serial_manager.rs     # 三线程分离串口核心（读取、落盘、增量解码）
+│   │   ├── lib.rs                # 库主入口与插件装配
+│   │   └── main.rs               # 二进制执行主入口
+│   ├── icons/                    # 全平台应用图标 (.ico, .icns, .png)
+│   ├── Cargo.toml                # Rust 依赖与工程配置
+│   └── tauri.conf.json           # Tauri v2 桌面运行时配置
+├── CHANGELOG.md                  # 迭代更新日志
+├── CONTRIBUTING.md               # 开发者贡献指南
+├── LICENSE                       # Apache-2.0 开源协议
+└── README.md                     # 项目介绍与说明文档
+```
+
+---
+
 ## 源码编译指南
 
 ### 1. 基础依赖

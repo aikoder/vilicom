@@ -1,0 +1,394 @@
+/* ==========================================================================
+   ViliCom - Base Layout & Component Styles
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 顶部硬件配置栏 */
+header {
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+select,
+input[type="text"],
+input[type="number"] {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    outline: none;
+    transition: all 0.2s;
+    color-scheme: dark;
+}
+
+select:focus,
+input:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25);
+}
+
+/* 解决 Linux WebKitGTK 下下拉菜单白底白字看不清的问题 */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+    padding-right: 26px !important;
+    cursor: pointer;
+}
+
+select option {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    padding: 5px 8px;
+}
+
+html[data-theme="light"] select,
+html[data-theme="light"] input[type="text"],
+html[data-theme="light"] input[type="number"] {
+    color-scheme: light;
+}
+
+html[data-theme="light"] select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.btn {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background-color: var(--border);
+}
+
+.btn-primary {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: #11111b;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+/* Moserial 核心录制面板 + 配置入口 */
+.record-panel {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-record {
+    border-color: #f38ba855;
+    color: #f5c2e7;
+    background: #f38ba815;
+}
+
+.btn-record.recording {
+    background-color: var(--accent-danger);
+    color: #11111b;
+    font-weight: 600;
+    border-color: var(--accent-danger);
+    animation: pulse-danger 2s infinite;
+}
+
+@keyframes pulse-danger {
+    0% { box-shadow: 0 0 0 0 rgba(243, 139, 168, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(243, 139, 168, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(243, 139, 168, 0); }
+}
+
+/* 主体工作区 */
+.workspace {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.terminal-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--term-bg);
+    border-right: 1px solid var(--border);
+    min-width: 0;
+}
+
+.term-subbar {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.terminal-screen {
+    flex: 1;
+    padding: 16px;
+    color: var(--term-text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.65;
+    letter-spacing: 0.25px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-y: auto;
+    user-select: text;
+    outline: none;
+}
+
+.terminal-screen.wrap {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.terminal-screen.nowrap {
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.log-time {
+    color: var(--log-time);
+    margin-right: 12px;
+    font-size: 12px;
+}
+
+.log-chinese {
+    color: var(--log-chinese);
+}
+
+.log-info {
+    color: var(--log-info);
+    font-weight: bold;
+}
+
+.log-warn {
+    color: var(--log-warn);
+    font-weight: bold;
+}
+
+.log-tx {
+    color: var(--log-tx);
+    font-style: italic;
+}
+
+/* 右侧 AT 快捷指令侧边栏 (10个配置按键) */
+.at-sidebar {
+    width: 290px;
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.at-sidebar.collapsed {
+    width: 0;
+}
+
+.at-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+}
+
+.at-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.at-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: border 0.2s;
+}
+
+.at-item:hover {
+    border-color: var(--accent-primary);
+}
+
+.at-index {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 800;
+    width: 14px;
+}
+
+.at-btn-send {
+    flex: 1;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.at-edit-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 4px;
+}
+
+.at-edit-btn:hover {
+    color: var(--text-main);
+}
+
+/* 底部发送区 */
+footer {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.send-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.send-input {
+    flex: 1;
+    font-family: var(--font-mono);
+    background-color: var(--bg-base);
+}
+
+.timer-badge {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(243, 139, 168, 0.15);
+    color: var(--accent-danger);
+    display: none;
+}
+
+/* 弹窗通用样式 */
+.modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    width: 440px;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.checkbox-group label {
+    text-transform: none;
+    font-weight: normal;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
