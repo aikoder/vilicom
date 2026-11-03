@@ -6,6 +6,26 @@ ViliCom 是一个基于 Tauri v2 与 Rust 构建的轻量、跨平台串口调�
 [![Version](https://img.shields.io/badge/Version-v0.1.0--alpha-green.svg)](https://github.com/vilinox/vilicom)
 [![Rust](https://img.shields.io/badge/Rust-1.85%2B-orange.svg)](https://www.rust-lang.org/)
 [![Tauri](https://img.shields.io/badge/Tauri-v2.x-indigo.svg)](https://tauri.app/)
+[![AI-Assisted](https://img.shields.io/badge/Built%20with-AI%20Pair%20Programming-blueviolet.svg)](#-ai-时代协同开发与提示词开源)
+
+> 💡 **写在前面（AI 时代的开源实验）**  
+> **本项目（包括 Rust 底层多线程串口管道、增量 UTF-8 乱码拼装算法、Tauri IPC 接口、全套自动化测试及应用图标）全部由开发者通过与 AI 结对协同编程开发完成。**  
+> 当前已步入 AI 时代，软件开发的门槛正在被重构，人人都可以表达需求并创造属于自己的生产力工具。为此，我们不仅开源软件源代码，也**完整开源了驱动本项目诞生的核心架构提示词（Prompts）**，欢迎交流、复刻或以此为模版构建你的桌面工具！
+
+---
+
+## 💡 AI 时代协同开发与提示词开源
+
+在本项目中，开发者负责**定义核心架构约束、工业红线与工程边界**，AI 负责**编写系统级 Rust 代码、性能调优、排查 WebKitGTK 兼容性以及自动化测试**。
+
+完整的原始架构设计与开发提示词已归档在项目仓库中：
+- 📄 **完整开发提示词**：[`docs/dev_prompt.md`](docs/dev_prompt.md)
+
+### 提示词编写心得与实践要点：
+1. **明确不可动摇的红线约束**：提示词中明确锁定前端 UI 结构和样式原型，禁止 AI 自由发挥打乱界面布局，仅专注于前后端 IPC 桥接与核心逻辑。
+2. **底层并发与鲁棒性架构指定**：明确提出“三线程分离流水线”（采集线程、磁盘写入线程、UI 解码节流线程），让 AI 在初始设计时就彻底避开界面卡死与数据竞争问题。
+3. **针对性攻克工业开发痛点**：精准指导 AI 解决特定场景难题，如跨串口包截断导致的 UTF-8 中文乱码问题（编写增量拼接算法）、日志落盘自动清洗 ANSI 色彩控制符等。
+4. **小步快跑与测试闭环**：通过分阶段交付目标与内置的 `cargo test` 单元测试，让 AI 能够自主编写断言用例验证算法正确性。
 
 ---
 
