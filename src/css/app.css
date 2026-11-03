@@ -179,6 +179,184 @@ html[data-theme="light"] select {
     align-items: center;
     justify-content: space-between;
     font-size: 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* 1. 搜索控制栏样式 */
+.term-search-bar {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.term-search-bar.hidden {
+    display: none;
+}
+
+.search-count-badge {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    padding: 2px 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    min-width: 42px;
+    text-align: center;
+}
+
+/* 2. 过滤与多色高亮面板 */
+.term-filter-panel {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.term-filter-panel.hidden {
+    display: none;
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-badge-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(137, 180, 250, 0.15);
+    color: var(--accent-primary);
+    letter-spacing: 0.5px;
+}
+
+.filter-stat {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+/* 调色盘与圆点选择 */
+.color-palette {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.color-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+    display: inline-block;
+}
+
+.color-dot:hover {
+    transform: scale(1.18);
+}
+
+.color-dot.selected {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 1px var(--accent-primary);
+    transform: scale(1.22);
+}
+
+/* 高亮标签列表 */
+.hl-tags-list {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-left: 6px;
+}
+
+.hl-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+.hl-chip-del {
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 11px;
+    line-height: 1;
+    opacity: 0.75;
+    padding: 0 2px;
+    color: inherit;
+}
+
+.hl-chip-del:hover {
+    opacity: 1;
+}
+
+/* 通配/正则状态按钮 */
+.btn-icon {
+    font-family: var(--font-mono);
+    font-weight: bold;
+    padding: 2px 6px;
+    font-size: 11px;
+}
+
+.btn-icon.active {
+    background: var(--accent-primary) !important;
+    color: #11111b !important;
+    border-color: var(--accent-primary) !important;
+}
+
+/* 3. 终端日志行与高亮/搜索匹配效果 */
+.term-line {
+    min-height: 22px;
+    line-height: 1.65;
+    word-break: break-all;
+}
+
+/* 关键词多色高亮样式 */
+mark.term-hl {
+    border-radius: 3px;
+    padding: 0 3px;
+    font-weight: 700;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+/* 搜索匹配项高亮样式 (类似 VS Code / Chrome) */
+mark.search-match {
+    background-color: rgba(249, 226, 175, 0.45);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 2px;
+    box-shadow: 0 0 0 1px rgba(249, 226, 175, 0.6);
+}
+
+mark.search-match.current {
+    background-color: #fab387 !important;
+    color: #11111b !important;
+    font-weight: 800;
+    outline: 2px solid var(--accent-primary);
+    box-shadow: 0 0 8px rgba(250, 179, 135, 0.8);
 }
 
 .terminal-screen {

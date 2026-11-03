@@ -41,6 +41,9 @@ The complete initial architecture prompt is archived in this repository:
   - Serial port auto-discovery and hot-plug disconnection detection.
 
 - **Terminal & Log Interaction**
+  - **Live Log Filtering**: Supports "Include" and "Exclude" modes with `*` and `?` wildcard and regular expression support, with instant row count stats.
+  - **Multi-Color Keyword Highlighting**: Add custom highlight keywords with color selection (6 eye-friendly palette presets + native full-spectrum color picker), automatically persistent across sessions.
+  - **Search with Wildcards & Regex (Ctrl+F)**: Dedicated search bar with real-time match counter (`current/total`), case sensitivity toggle, wildcard (`*`, `?`) and regex modes, with smooth scroll navigation (`Enter` / `Shift+Enter`).
   - **Incremental UTF-8 Stream Decoding**: Solves the common multi-byte Chinese/UTF-8 character truncation issue caused by serial packet fragmentation.
   - **Render Anti-Freeze Protection**: Throttles log stream pushes to the webview at a smooth 30 FPS, preventing UI hangs during high-frequency log dumps.
   - **Smart Scrolling & Enter Key Shortcut**: Automatically pauses auto-scrolling when scrolling up to read historical logs. Press the **`ENTER`** key (or click the toolbar button) anywhere in the terminal view to immediately jump to the newest line and resume live following.

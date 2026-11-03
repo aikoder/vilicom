@@ -16,9 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Auto scan and detection of USB UARTs (`/dev/ttyUSB*`, `/dev/ttyACM*`, `COM*`).
   - Support for common and custom/high-speed baud rates (e.g. 1M / `1000000`, 2M / `2000000`, ESP Boot `74880`).
   - Hardware (RTS/CTS) and software flow control options.
-- **Terminal UI**:
+- **Terminal UI & Log Search/Filter**:
   - Integrated 5 eye-friendly themes (Catppuccin Mocha default, Tokyo Night, Nordic Frost, Obsidian Dark, Clean Light).
   - Built-in open-source monospace typography (JetBrains Mono, Fira Code, Cascadia Code, Ubuntu Mono).
+  - **Live Log Filtering**: Include/Exclude modes with wildcard (*, ?) and regex support.
+  - **Multi-Color Keyword Highlighting**: Custom keywords with 6 preset eye-comfort colors and full-spectrum color picker.
+  - **Search Bar (Ctrl+F)**: Real-time match counting, navigation (Enter/Shift+Enter), wildcard (*, ?) and regex modes.
   - Auto-wrap and auto-scroll controls.
   - **Enter key shortcut**: Press `ENTER` anywhere in the terminal view or click the toolbar button to instantly jump to the newest log line and resume auto-scrolling.
 - **Moserial Record Engine**:

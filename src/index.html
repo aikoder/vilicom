@@ -70,23 +70,84 @@
         <div class="terminal-panel">
             <div class="term-subbar">
                 <div class="flex-row">
-                    <label><input type="checkbox" id="autowrap" checked onchange="toggleWrap()"> 自动折行 (自适应换行)</label>
+                    <label><input type="checkbox" id="autowrap" checked onchange="toggleWrap()"> 自动折行</label>
                     <label><input type="checkbox" id="autoscroll" checked> 自动滚屏</label>
-                    <span style="font-size: 11px; color: var(--text-muted); margin-left: 6px;">(按 <kbd style="background:var(--bg-card); border:1px solid var(--border); border-radius:3px; padding:1px 5px; font-size:10px; color:var(--text-main);">Enter</kbd> 自动跳到最新行)</span>
+                    <button class="btn" style="padding: 2px 8px; font-size: 11px;" id="btn-toggle-search" onclick="toggleSearchBar()" title="打开/关闭搜索 (快捷键: Ctrl+F)">🔍 搜索</button>
+                    <button class="btn" style="padding: 2px 8px; font-size: 11px;" id="btn-toggle-filter" onclick="toggleFilterPanel()" title="打开/关闭过滤与高亮面板">🎯 过滤 &amp; 高亮</button>
+                    <span style="font-size: 11px; color: var(--text-muted); margin-left: 4px;">(<kbd style="background:var(--bg-card); border:1px solid var(--border); border-radius:3px; padding:1px 5px; font-size:10px; color:var(--text-main);">Enter</kbd> 直达最新行)</span>
                 </div>
                 <div class="flex-row">
-                    <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">当前字体: <b id="current-font-label">JetBrains Mono</b></span>
-                    <button class="btn" style="padding: 2px 8px; font-size: 11px;" onclick="jumpToLatestLine()" title="跳转至最底端最新日志行 (快捷键: Enter)">⤓ 最新行 (Enter)</button>
+                    <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">字体: <b id="current-font-label">JetBrains Mono</b></span>
+                    <button class="btn" style="padding: 2px 8px; font-size: 11px;" onclick="jumpToLatestLine()" title="跳转至最底端最新日志行 (快捷键: Enter)">⤓ 最新行</button>
                     <button class="btn" style="padding: 2px 8px; font-size: 11px;" onclick="clearTerm()">清屏</button>
+                </div>
+            </div>
+
+            <!-- 1. 搜索控制栏 (默认隐藏，支持快捷键 Ctrl+F / Cmd+F 呼出) -->
+            <div class="term-search-bar hidden" id="term-search-bar">
+                <div style="font-size: 11px; font-weight: bold; color: var(--accent-primary); display: flex; align-items: center; gap: 4px;">
+                    <span>🔍</span> 搜索:
+                </div>
+                <input type="text" id="search-input" placeholder="输入搜索内容 (默认普通文本，可开启 .* 支持 * ? 通配或正则)..." style="flex: 1; min-width: 140px; font-family: var(--font-mono); font-size: 12px; padding: 4px 8px;">
+                
+                <button class="btn btn-icon" id="search-wildcard-btn" onclick="toggleSearchWildcard()" title="通配符/正则模式 (支持 * ? 通配，或 /regex/ 正则)">.*</button>
+                <button class="btn btn-icon" id="search-case-btn" onclick="toggleSearchCase()" title="区分大小写 (Case Sensitive)">Aa</button>
+
+                <span class="search-count-badge" id="search-count">0/0</span>
+
+                <button class="btn" style="padding: 3px 7px;" onclick="searchPrev()" title="上一个匹配项 (Shift+Enter)">⏶</button>
+                <button class="btn" style="padding: 3px 7px;" onclick="searchNext()" title="下一个匹配项 (Enter)">⏷</button>
+                <button class="btn" style="padding: 3px 7px;" onclick="closeSearchBar()" title="关闭搜索 (Esc)">✕</button>
+            </div>
+
+            <!-- 2. 日志过滤与多色高亮面板 (可折叠) -->
+            <div class="term-filter-panel" id="term-filter-panel">
+                <!-- 行 1: 文本过滤 -->
+                <div class="filter-row">
+                    <div class="flex-row" style="flex: 1;">
+                        <span class="filter-badge-label">过滤</span>
+                        <select id="filter-mode" onchange="applyFilter()" style="padding: 2px 6px; font-size: 11px;">
+                            <option value="include">仅显示包含</option>
+                            <option value="exclude">排除匹配行</option>
+                        </select>
+                        <input type="text" id="filter-input" oninput="applyFilter()" placeholder="输入字符过滤日志行 (支持 * ? 通配符)..." style="flex: 1; max-width: 320px; font-family: var(--font-mono); padding: 3px 8px; font-size: 11px;">
+                        <button class="btn btn-icon" id="filter-wildcard-btn" onclick="toggleFilterWildcard()" title="通配符/正则过滤开关">.*</button>
+                        <span class="filter-stat" id="filter-stat">全部显示</span>
+                        <button class="btn" style="padding: 2px 6px; font-size: 11px;" onclick="clearFilter()">重置过滤</button>
+                    </div>
+                </div>
+
+                <!-- 行 2: 关键词多色高亮 -->
+                <div class="filter-row highlight-row">
+                    <div class="flex-row" style="flex-wrap: wrap; flex: 1;">
+                        <span class="filter-badge-label" style="background: rgba(166, 227, 161, 0.15); color: var(--accent-success);">高亮</span>
+                        <input type="text" id="hl-input" placeholder="输入高亮词 (回车添加)..." style="width: 130px; font-family: var(--font-mono); padding: 3px 8px; font-size: 11px;">
+                        
+                        <!-- 预设护眼颜色调色盘 -->
+                        <div class="color-palette">
+                            <span class="color-dot selected" data-color="#f38ba8" style="background:#f38ba8;" title="洋红 (Mocha Red)" onclick="selectHlColor(this)"></span>
+                            <span class="color-dot" data-color="#fab387" style="background:#fab387;" title="暖橙 (Mocha Peach)" onclick="selectHlColor(this)"></span>
+                            <span class="color-dot" data-color="#f9e2af" style="background:#f9e2af;" title="亮黄 (Mocha Yellow)" onclick="selectHlColor(this)"></span>
+                            <span class="color-dot" data-color="#a6e3a1" style="background:#a6e3a1;" title="翠绿 (Mocha Green)" onclick="selectHlColor(this)"></span>
+                            <span class="color-dot" data-color="#89dceb" style="background:#89dceb;" title="天青 (Mocha Sky)" onclick="selectHlColor(this)"></span>
+                            <span class="color-dot" data-color="#cba6f7" style="background:#cba6f7;" title="熏衣草紫 (Mocha Lavender)" onclick="selectHlColor(this)"></span>
+                        </div>
+                        <input type="color" id="hl-custom-color" value="#f38ba8" title="自定义任意颜色" style="width:20px; height:20px; padding:0; border:none; border-radius:3px; cursor:pointer;" onchange="onCustomColorChange(this.value)">
+
+                        <button class="btn btn-primary" style="padding: 2px 8px; font-size: 11px;" onclick="addHighlightRule()">+ 添加高亮</button>
+
+                        <!-- 高亮规则 Chip 标签列表 -->
+                        <div class="hl-tags-list" id="hl-tags-list"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- 终端展示屏幕 -->
             <div class="terminal-screen wrap" id="terminal" tabindex="0">
-                <div><span class="log-time">[00:00:00.000]</span><span class="log-info">[INIT]</span> 护眼字体引擎已就绪: JetBrains Mono (专为减缓视疲劳设计)，字号: 14px</div>
-                <div><span class="log-time">[00:00:00.120]</span><span class="log-warn">[BOOT]</span> ets Jun 8 2016 00:22:57, rst cause:1, boot mode:(33)</div>
-                <div><span class="log-chinese">[ASR 识别结果] 用户指令: "正在录制音频流到指定目录..." (置信度: 0.99)</span></div>
-                <div><span class="log-time">[00:00:01.020]</span><span class="log-info">[RECORD]</span> 具备日志流式落盘保护机制，即使强制关机不丢末尾包</div>
+                <div class="term-line" data-raw="[00:00:00.000] [INIT] 护眼字体引擎已就绪: JetBrains Mono (专为减缓视疲劳设计)，字号: 14px"><span class="log-time">[00:00:00.000]</span><span class="log-info">[INIT]</span> 护眼字体引擎已就绪: JetBrains Mono (专为减缓视疲劳设计)，字号: 14px</div>
+                <div class="term-line" data-raw="[00:00:00.120] [BOOT] ets Jun 8 2016 00:22:57, rst cause:1, boot mode:(33)"><span class="log-time">[00:00:00.120]</span><span class="log-warn">[BOOT]</span> ets Jun 8 2016 00:22:57, rst cause:1, boot mode:(33)</div>
+                <div class="term-line" data-raw="[ASR 识别结果] 用户指令: &quot;正在录制音频流到指定目录...&quot; (置信度: 0.99)"><span class="log-chinese">[ASR 识别结果] 用户指令: "正在录制音频流到指定目录..." (置信度: 0.99)</span></div>
+                <div class="term-line" data-raw="[00:00:01.020] [RECORD] 具备日志流式落盘保护机制，即使强制关机不丢末尾包"><span class="log-time">[00:00:01.020]</span><span class="log-info">[RECORD]</span> 具备日志流式落盘保护机制，即使强制关机不丢末尾包</div>
             </div>
         </div>
 
