@@ -299,6 +299,7 @@
             text-rendering: optimizeLegibility;
             overflow-y: auto;
             user-select: text;
+            outline: none;
         }
         .terminal-screen.wrap { white-space: pre-wrap; word-break: break-all; }
         .terminal-screen.nowrap { white-space: pre; overflow-x: auto; }
@@ -465,15 +466,17 @@
                 <div class="flex-row">
                     <label><input type="checkbox" id="autowrap" checked onchange="toggleWrap()"> 自动折行 (自适应换行)</label>
                     <label><input type="checkbox" id="autoscroll" checked> 自动滚屏</label>
+                    <span style="font-size: 11px; color: var(--text-muted); margin-left: 6px;">(按 <kbd style="background:var(--bg-card); border:1px solid var(--border); border-radius:3px; padding:1px 5px; font-size:10px; color:var(--text-main);">Enter</kbd> 自动跳到最新行)</span>
                 </div>
                 <div class="flex-row">
                     <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">当前字体: <b id="current-font-label">JetBrains Mono</b></span>
+                    <button class="btn" style="padding: 2px 8px; font-size: 11px;" onclick="jumpToLatestLine()" title="跳转至最底端最新日志行 (快捷键: Enter)">⤓ 最新行 (Enter)</button>
                     <button class="btn" style="padding: 2px 8px; font-size: 11px;" onclick="clearTerm()">清屏</button>
                 </div>
             </div>
 
-            <!-- 默认应用护眼 JetBrains Mono 字体 -->
-            <div class="terminal-screen wrap" id="terminal">
+            <!-- 默认应用护眼 JetBrains Mono 字体，支持聚焦与 Enter 键直达 -->
+            <div class="terminal-screen wrap" id="terminal" tabindex="0">
                 <div><span class="log-time">[00:00:00.000]</span><span class="log-info">[INIT]</span> 护眼字体引擎已就绪: JetBrains Mono (专为减缓视疲劳设计)，字号: 14px</div>
                 <div><span class="log-time">[00:00:00.120]</span><span class="log-warn">[BOOT]</span> ets Jun 8 2016 00:22:57, rst cause:1, boot mode:(33)</div>
                 <div><span class="log-chinese">[ASR 识别结果] 用户指令: "正在录制音频流到指定目录..." (置信度: 0.99)</span></div>
@@ -990,9 +993,51 @@
         }
 
         function clearTerm() { terminal.innerHTML = ''; }
-        function scrollBottom() {
-            if (autoscroll.checked) terminal.scrollTop = terminal.scrollHeight;
+        
+        // 用户滚动与回车直达最新行机制
+        let userScrolledUp = false;
+        terminal.addEventListener('scroll', () => {
+            // 如果距离底部超过 35px，标记为用户正在向上查看历史日志，暂停强制下滚
+            const isNearBottom = terminal.scrollHeight - terminal.scrollTop - terminal.clientHeight <= 35;
+            userScrolledUp = !isNearBottom;
+        });
+
+        function jumpToLatestLine() {
+            terminal.scrollTop = terminal.scrollHeight;
+            userScrolledUp = false;
+            const autoscrollChk = document.getElementById('autoscroll');
+            if (autoscrollChk) autoscrollChk.checked = true;
         }
+
+        function scrollBottom() {
+            if (autoscroll.checked && !userScrolledUp) {
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        // 监听回车键 (Enter)：当焦点在日志界面或非输入框区域时，敲击回车直接跳到最新行
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const active = document.activeElement;
+                // 如果用户当前正在底部的指令输入框准备发送指令，保留原有的 doSend()
+                if (active && active.id === 'send-input') {
+                    return;
+                }
+                // 如果正在弹窗中的输入控件内操作，不拦截回车
+                const tag = active ? active.tagName.toUpperCase() : '';
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+                    return;
+                }
+                
+                e.preventDefault();
+                jumpToLatestLine();
+            }
+        });
+
+        // 点击日志终端区域自动获得焦点
+        terminal.addEventListener('click', () => {
+            terminal.focus();
+        });
 
         // ================= 8. 后端事件监听装配 =================
         function setupEventListeners() {
