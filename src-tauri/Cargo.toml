@@ -1,8 +1,8 @@
 [package]
 name = "vilicom"
 version = "0.1.0"
-description = "ViliCom - Next-Gen Industrial Serial Studio by Vilinox"
-authors = ["Vilinox"]
+description = "ViliCom - Modern Cross-Platform Serial & Log Studio"
+authors = ["aikoderbot <aikoderbot@mail.grokbot.com>"]
 license = "Apache-2.0"
 edition = "2021"
 
