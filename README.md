@@ -1,5 +1,9 @@
 # ViliCom
 
+<p align="right">
+  <b>简体中文</b> | <a href="README_en.md">English</a>
+</p>
+
 ViliCom 是一个基于 Tauri v2 与 Rust 构建的轻量、跨平台串口调试与日志记录工具，适用于嵌入式开发、单片机调试及日常通信测试。
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -112,7 +116,8 @@ vilicom/
 ├── CHANGELOG.md                  # 迭代更新日志
 ├── CONTRIBUTING.md               # 开发者贡献指南
 ├── LICENSE                       # Apache-2.0 开源协议
-└── README.md                     # 项目介绍与说明文档
+├── README.md                     # 项目介绍与说明文档 (中文)
+└── README_en.md                  # Project Documentation (English)
 ```
 
 ---
