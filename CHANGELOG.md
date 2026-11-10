@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1-alpha] - 2026-11-10
+
+### Fixed
+- **Windows terminal text selection/copy**: override global `user-select: none` on log lines so WebView2 allows drag-select and Ctrl+C.
+- **Windows `~` path expansion**: resolve home directory via `USERPROFILE` when `HOME` is unset.
+
 ## [0.1.0-alpha] - 2026-11-03
 
 ### Added
