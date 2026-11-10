@@ -596,8 +596,18 @@ fn resolve_path(raw: &str) -> PathBuf {
 }
 
 fn dirs_home() -> Option<PathBuf> {
-    std::env::var_os("HOME")
-        .and_then(|h| if h.is_empty() { None } else { Some(PathBuf::from(h)) })
+    // Unix uses HOME; Windows typically uses USERPROFILE (HOME may also be set by some shells).
+    ["HOME", "USERPROFILE"]
+        .into_iter()
+        .find_map(|key| {
+            std::env::var_os(key).and_then(|h| {
+                if h.is_empty() {
+                    None
+                } else {
+                    Some(PathBuf::from(h))
+                }
+            })
+        })
 }
 
 /// 增量 UTF-8 解码核心算法：针对跨串口分包切断的汉字等任意多字节字符进行缓存组包
