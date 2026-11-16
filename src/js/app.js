@@ -23,6 +23,7 @@ let isRecording = false;
 let userScrolledUp = false;
 let sendTimer = null;
 let currentLogDir = "~/serial_logs/";
+let lastRecordFilePath = "";
 
 // =============================================================================
 // 2. Tauri IPC Helpers & Matcher Utility
@@ -271,6 +272,8 @@ btnRecord.onclick = async () => {
         try {
             const filePath = await invoke('start_record', { config });
             isRecording = true;
+            lastRecordFilePath = filePath;
+            updateCopyLogPathButtonTitle();
             btnRecord.classList.add('recording');
             recText.innerText = "停止录制";
             logSystemMessage(`[RECORD] 开始后台落盘录制: ${filePath}`);
@@ -282,10 +285,12 @@ btnRecord.onclick = async () => {
         try {
             const summary = await invoke('stop_record');
             isRecording = false;
+            lastRecordFilePath = summary.file_path;
+            updateCopyLogPathButtonTitle();
             btnRecord.classList.remove('recording');
             recText.innerText = "开始录制 (Record)";
             const kb = (summary.bytes_written / 1024).toFixed(1);
-            recInfo.innerText = `录制完成: ${summary.file_path} (${summary.duration_secs}s, ${kb} KB)`;
+            recInfo.innerHTML = `录制完成: <span class="rec-path" title="${escapeHtml(summary.file_path)}">${escapeHtml(summary.file_path)}</span> <span class="rec-stats">(${summary.duration_secs}s, ${kb} KB)</span>`;
             logSystemMessage(`[RECORD] 录制完成，文件已完整落盘: ${summary.file_path} (${kb} KB)`);
         } catch (err) {
             logSystemMessage(`[RECORD ERROR] 停止录制失败: ${err}`, 'log-warn');
@@ -307,6 +312,62 @@ async function browseLogDir() {
     }
 }
 
+function updateCopyLogPathButtonTitle() {
+    const btn = document.getElementById('btn-copy-log-path');
+    if (!btn) return;
+    const targetPath = lastRecordFilePath || currentLogDir;
+    btn.title = targetPath ? `复制日志路径: ${targetPath}` : '复制当前日志路径';
+}
+
+async function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (err) {
+            // Fall through to execCommand fallback
+        }
+    }
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    let ok = false;
+    try {
+        ok = document.execCommand('copy');
+    } catch (e) {
+        ok = false;
+    }
+    document.body.removeChild(textarea);
+    return ok;
+}
+
+async function copyLogPath() {
+    const pathToCopy = lastRecordFilePath || currentLogDir;
+    if (!pathToCopy) return;
+
+    const ok = await copyTextToClipboard(pathToCopy);
+    const btn = document.getElementById('btn-copy-log-path');
+    if (ok) {
+        if (btn) {
+            btn.textContent = '✅ 已复制';
+            btn.classList.add('copied');
+            clearTimeout(btn._copyTimer);
+            btn._copyTimer = setTimeout(() => {
+                btn.textContent = '📋 复制路径';
+                btn.classList.remove('copied');
+            }, 1500);
+        }
+        logSystemMessage(`[RECORD] 已复制日志路径到剪贴板: ${pathToCopy}`);
+    } else {
+        logSystemMessage(`[RECORD ERROR] 复制路径失败，请手动复制: ${pathToCopy}`, 'log-warn');
+    }
+}
+
 function openLogConfigModal() { document.getElementById('log-config-modal').style.display = 'flex'; }
 function closeLogConfigModal() { document.getElementById('log-config-modal').style.display = 'none'; }
 
@@ -314,6 +375,7 @@ function saveLogConfig() {
     currentLogDir = document.getElementById('log-dir').value;
     if (!currentLogDir.endsWith('/') && !currentLogDir.endsWith('\\')) currentLogDir += '/';
     recInfo.innerText = `就绪: ${currentLogDir}`;
+    updateCopyLogPathButtonTitle();
 
     const savedConfig = {
         dir: currentLogDir,
@@ -335,6 +397,7 @@ function loadLogConfig() {
             document.getElementById('log-dir').value = saved.dir;
             recInfo.innerText = `就绪: ${saved.dir}`;
         }
+        updateCopyLogPathButtonTitle();
         if (saved.naming) document.getElementById('log-naming').value = saved.naming;
         if (saved.rx !== undefined) document.getElementById('log-rx').checked = saved.rx;
         if (saved.tx !== undefined) document.getElementById('log-tx').checked = saved.tx;
@@ -1016,18 +1079,22 @@ function setupEventListeners() {
     // 监听 Moserial 录制落盘状态推送
     listen('record-status', (event) => {
         const stat = event.payload;
+        if (stat.file_path) {
+            lastRecordFilePath = stat.file_path;
+            updateCopyLogPathButtonTitle();
+        }
         if (stat.recording) {
             isRecording = true;
             btnRecord.classList.add('recording');
             recText.innerText = "停止录制";
             const kb = (stat.bytes_written / 1024).toFixed(1);
-            recInfo.innerHTML = `正在保存至: <span style="color:#f87171;">${escapeHtml(stat.file_path)}</span> (${stat.duration_secs}s, ${kb} KB)`;
+            recInfo.innerHTML = `正在保存至: <span class="rec-path" style="color:#f87171;" title="${escapeHtml(stat.file_path)}">${escapeHtml(stat.file_path)}</span> <span class="rec-stats">(${stat.duration_secs}s, ${kb} KB)</span>`;
         } else {
             isRecording = false;
             btnRecord.classList.remove('recording');
             recText.innerText = "开始录制 (Record)";
             const kb = (stat.bytes_written / 1024).toFixed(1);
-            recInfo.innerText = `录制完成: ${stat.file_path} (${stat.duration_secs}s, ${kb} KB)`;
+            recInfo.innerHTML = `录制完成: <span class="rec-path" title="${escapeHtml(stat.file_path)}">${escapeHtml(stat.file_path)}</span> <span class="rec-stats">(${stat.duration_secs}s, ${kb} KB)</span>`;
         }
     });
 

@@ -124,6 +124,12 @@ html[data-theme="light"] select {
     opacity: 0.9;
 }
 
+.btn.copied {
+    border-color: var(--accent-success);
+    color: var(--accent-success);
+    background-color: rgba(166, 227, 161, 0.12);
+}
+
 /* Moserial 核心录制面板 + 配置入口 */
 .record-panel {
     background-color: var(--bg-card);
@@ -133,6 +139,32 @@ html[data-theme="light"] select {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.rec-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    min-width: 0;
+    max-width: 100%;
+}
+
+.rec-path {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 360px;
+}
+
+.rec-stats {
+    flex-shrink: 0;
+    white-space: nowrap;
+    color: var(--text-main);
 }
 
 .btn-record {

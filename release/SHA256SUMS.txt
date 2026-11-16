@@ -1,1 +1,1 @@
-8c81ccfca9ad780ca75f7e8b5d797676177672e058a6efa5bcbeefde8785d09c  ViliCom_0.1.0-alpha_amd64.deb
+dde90d1810022ec606a347fc35be2bd5bb659983336b6381601d2218cea87550  ViliCom_0.1.1-alpha_amd64.deb
