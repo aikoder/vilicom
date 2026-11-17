@@ -1002,8 +1002,13 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-terminal.addEventListener('click', () => {
-    terminal.focus();
+// Focus terminal for keyboard shortcuts without clearing an in-progress text selection.
+// Calling focus() on click after a drag-select can collapse the selection on WebView2/Windows.
+terminal.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    if (document.activeElement !== terminal) {
+        terminal.focus({ preventScroll: true });
+    }
 });
 
 // =============================================================================

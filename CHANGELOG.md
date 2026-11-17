@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Copy Log Path Button**: Added a one-click `📋 复制路径` button in the log recording toolbar to copy the active/last recorded log file path (or configured log directory when idle) directly to the clipboard with visual confirmation.
 
+### Fixed
+- **Windows terminal text selection/copy**: Override global `user-select: none` on log lines so WebView2 allows drag-select and Ctrl+C.
+- **Windows `~` path expansion**: Resolve home directory via `USERPROFILE` when `HOME` is unset.
+
 ## [0.1.0-alpha] - 2026-11-03
 
 ### Added

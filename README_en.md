@@ -7,7 +7,7 @@
 ViliCom is a lightweight, cross-platform serial communication and log recording studio built with Tauri v2 and Rust, designed for embedded developers, firmware testing, and hardware debugging.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-v0.1.0--alpha-green.svg)](https://github.com/vilinox/vilicom)
+[![Version](https://img.shields.io/badge/Version-v0.1.1--alpha-green.svg)](https://github.com/vilinox/vilicom)
 [![Rust](https://img.shields.io/badge/Rust-1.85%2B-orange.svg)](https://www.rust-lang.org/)
 [![Tauri](https://img.shields.io/badge/Tauri-v2.x-indigo.svg)](https://tauri.app/)
 [![AI-Assisted](https://img.shields.io/badge/Built%20with-AI%20Pair%20Programming-blueviolet.svg)](#-ai-pair-programming--open-source-prompts)

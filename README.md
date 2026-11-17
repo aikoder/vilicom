@@ -7,7 +7,7 @@
 ViliCom 是一个基于 Tauri v2 与 Rust 构建的轻量、跨平台串口调试与日志记录工具，适用于嵌入式开发、单片机调试及日常通信测试。
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-v0.1.0--alpha-green.svg)](https://github.com/vilinox/vilicom)
+[![Version](https://img.shields.io/badge/Version-v0.1.1--alpha-green.svg)](https://github.com/vilinox/vilicom)
 [![Rust](https://img.shields.io/badge/Rust-1.85%2B-orange.svg)](https://www.rust-lang.org/)
 [![Tauri](https://img.shields.io/badge/Tauri-v2.x-indigo.svg)](https://tauri.app/)
 [![AI-Assisted](https://img.shields.io/badge/Built%20with-AI%20Pair%20Programming-blueviolet.svg)](#-ai-时代协同开发与提示词开源)

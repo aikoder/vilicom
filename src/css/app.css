@@ -363,6 +363,9 @@ html[data-theme="light"] select {
     min-height: 22px;
     line-height: 1.65;
     word-break: break-all;
+    /* Override global * { user-select: none } — required for WebView2/Chromium on Windows */
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 /* 关键词多色高亮样式 */
@@ -403,8 +406,16 @@ mark.search-match.current {
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     overflow-y: auto;
+    -webkit-user-select: text;
     user-select: text;
+    cursor: text;
     outline: none;
+}
+
+/* Universal * { user-select: none } wins on every child; WebView2 needs an explicit override */
+.terminal-screen * {
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 .terminal-screen.wrap {
