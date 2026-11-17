@@ -867,6 +867,9 @@ searchInputEl.addEventListener('keydown', (e) => {
 // =============================================================================
 let rxBuffer = '';
 let rxFlushTimer = null;
+let isTermHexMode = localStorage.getItem('vilicom_term_hex') === 'true';
+let hexByteQueue = [];
+let hexFlushTimer = null;
 
 function appendLogLine(rawText, isTx = false) {
     const div = document.createElement('div');
@@ -920,6 +923,24 @@ function logSystemMessage(msg, className = 'log-info') {
 function toggleWrap() {
     const isWrap = document.getElementById('autowrap').checked;
     terminal.className = isWrap ? "terminal-screen wrap" : "terminal-screen nowrap";
+}
+
+function toggleTermHexMode() {
+    const chk = document.getElementById('term-hex-mode');
+    isTermHexMode = chk ? chk.checked : false;
+    localStorage.setItem('vilicom_term_hex', isTermHexMode ? 'true' : 'false');
+
+    if (isTermHexMode && rxBuffer.length > 0) {
+        clearTimeout(rxFlushTimer);
+        appendLogLine(rxBuffer);
+        rxBuffer = '';
+    } else if (!isTermHexMode && hexByteQueue.length > 0) {
+        clearTimeout(hexFlushTimer);
+        appendLogLine(hexByteQueue.join(' '));
+        hexByteQueue = [];
+    }
+
+    logSystemMessage(`[TERM] 终端显示模式已切换为: ${isTermHexMode ? 'HEX (十六进制)' : 'ASCII / UTF-8 文本'}`);
 }
 
 function clearTerm() {
@@ -1053,7 +1074,31 @@ function setupEventListeners() {
     // 监听串口接收数据流 (经 Rust 增量 UTF-8 流式组包与 30FPS 节流处理)
     listen('serial-rx', (event) => {
         const payload = event.payload;
-        if (payload && payload.text) {
+        if (!payload) return;
+
+        if (isTermHexMode) {
+            if (payload.hex) {
+                const tokens = payload.hex.trim().split(/\s+/).filter(Boolean);
+                for (const tok of tokens) {
+                    hexByteQueue.push(tok);
+                    if (hexByteQueue.length >= 16) {
+                        appendLogLine(hexByteQueue.splice(0, 16).join(' '));
+                    }
+                }
+                clearTimeout(hexFlushTimer);
+                if (hexByteQueue.length > 0) {
+                    hexFlushTimer = setTimeout(() => {
+                        if (hexByteQueue.length > 0) {
+                            appendLogLine(hexByteQueue.join(' '));
+                            hexByteQueue = [];
+                        }
+                    }, 120);
+                }
+            }
+            return;
+        }
+
+        if (payload.text) {
             rxBuffer += payload.text;
             if (rxBuffer.includes('\n')) {
                 const lines = rxBuffer.split('\n');
@@ -1103,6 +1148,8 @@ function setupEventListeners() {
 
 // 页面初始化
 window.addEventListener('DOMContentLoaded', () => {
+    const termHexChk = document.getElementById('term-hex-mode');
+    if (termHexChk) termHexChk.checked = isTermHexMode;
     renderAtList();
     renderHighlightChips();
     reapplyAllHighlights();

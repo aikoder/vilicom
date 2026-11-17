@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2-alpha] - 2026-11-17
+
+### Added
+- **Terminal HEX Display Mode**: Added a `HEX 显示` toggle in the terminal toolbar to render received serial data as clean 16-byte-per-line hexadecimal rows (`AA 55 ...`) with `localStorage` persistence.
+
+### Fixed
+- **Raw Binary RX Emission**: Ensured the Rust UI throttler emits `serial-rx` events whenever raw HEX bytes are queued, even if an incomplete multi-byte UTF-8 sequence is held in the text decoder buffer.
+
 ## [0.1.1-alpha] - 2026-11-16
 
 ### Added

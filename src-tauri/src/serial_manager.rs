@@ -273,7 +273,9 @@ impl SerialManager {
                     }
 
                     // 每 ~33ms (约 30 FPS) 节流向前端推送一次帧数据
-                    if last_emit.elapsed() >= Duration::from_millis(33) && !throttled_text.is_empty() {
+                    if last_emit.elapsed() >= Duration::from_millis(33)
+                        && (!throttled_text.is_empty() || !throttled_hex.is_empty())
+                    {
                         let payload = SerialRxPayload {
                             text: std::mem::take(&mut throttled_text),
                             hex: std::mem::take(&mut throttled_hex),
@@ -290,7 +292,7 @@ impl SerialManager {
                     }
                     decode_incremental_utf8(&mut residual_buf, &chunk, &mut throttled_text);
                 }
-                if !throttled_text.is_empty() {
+                if !throttled_text.is_empty() || !throttled_hex.is_empty() {
                     let payload = SerialRxPayload {
                         text: throttled_text,
                         hex: throttled_hex,

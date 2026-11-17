@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViliCom - 串口调试与日志工具 (v0.1.1-alpha)</title>
+    <title>ViliCom - 串口调试与日志工具 (v0.1.2-alpha)</title>
     <link rel="icon" type="image/png" href="icon.png">
 
     <!-- 引入开源等宽护眼字体 -->
@@ -73,6 +73,7 @@
                 <div class="flex-row">
                     <label><input type="checkbox" id="autowrap" checked onchange="toggleWrap()"> 自动折行</label>
                     <label><input type="checkbox" id="autoscroll" checked> 自动滚屏</label>
+                    <label title="以十六进制 (HEX) 格式显示接收到的串口数据"><input type="checkbox" id="term-hex-mode" onchange="toggleTermHexMode()"> HEX 显示</label>
                     <button class="btn" style="padding: 2px 8px; font-size: 11px;" id="btn-toggle-search" onclick="toggleSearchBar()" title="打开/关闭搜索 (快捷键: Ctrl+F)">🔍 搜索</button>
                     <button class="btn" style="padding: 2px 8px; font-size: 11px;" id="btn-toggle-filter" onclick="toggleFilterPanel()" title="打开/关闭过滤与高亮面板">🎯 过滤 &amp; 高亮</button>
                     <span style="font-size: 11px; color: var(--text-muted); margin-left: 4px;">(<kbd style="background:var(--bg-card); border:1px solid var(--border); border-radius:3px; padding:1px 5px; font-size:10px; color:var(--text-main);">Enter</kbd> 直达最新行)</span>
